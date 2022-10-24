@@ -3,24 +3,14 @@ import { Navbar } from "../../components/Navbar/Navbar";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
-import { useState } from "react";
-import axios from "axios";
+import { useState, useEffect } from "react";
+import axios, { AxiosResponse } from "axios";
 
 interface Task {
-    description: string,
-    detail: string,
-    id: string
-}
-
-interface User {
-    email: string,
-    password: string,
-    vPassword: string,
-    id: string,
-    tasks: Task[],
-    archivedTasks: Task[]
-}
-
+    _description: string,
+    _detail: string,
+    _id: string
+};
 
 export const Home: React.FC = () => {
 
@@ -54,45 +44,6 @@ export const Home: React.FC = () => {
         setOpenEdit(false);
     };
 
-    async function createTask() {
-        try {
-            const task = {
-                description: descricao,
-                detail: detalhamento
-            };
-
-            const userId = localStorage.getItem('user-id');
-
-            const result: Task[] = await api.post(`/users/${userId}/tasks`, task);
-
-            listaRecados();
-
-            console.log(result);
-
-        } catch (error: any) {
-            console.log(error);
-            console.log("Erro ao criar task")
-        }
-    };
-
-    async function listaRecados() {
-        try {
-            const userId = localStorage.getItem('user-id');
-
-            const result: Task[] = await api.get(`/users/${userId}/tasks`);
-
-            setLista(result);
-
-            console.log("Deu bom")
-            console.log(result)
-
-        } catch (error: any) {
-
-            console.log("Deu ruim")
-            console.log(error)
-        }
-    };
-
     async function isLogged() {
 
         const id = localStorage.getItem("user-id");
@@ -103,7 +54,79 @@ export const Home: React.FC = () => {
         };
     };
 
+    async function createTask() {
+        try {
+            const task = {
+                description: descricao,
+                detail: detalhamento,
+            };
+
+            const userId = localStorage.getItem('user-id');
+
+            const result: Task[] = await api.post(`/users/${userId}/tasks`, task);
+
+            //localStorage.setItem('task-id', task.id)
+
+            //console.log(result);
+
+            closeModalAdd();
+
+            window.location.reload();
+
+        } catch (error: any) {
+            console.log(error);
+            console.log("Erro ao criar task")
+        }
+    };
+
+    async function Mostrar() {
+        try {
+            useEffect(() => {
+                const getListaDeRecados = async () => {
+        
+                    const userId = localStorage.getItem('user-id');
+        
+                    const  { data }  : AxiosResponse <Task[]> = await (await api.get(`/users/${userId}/tasks`)).data;
+        
+                    setLista(data);
+        
+                  console.log(data)
+                };
+        
+                getListaDeRecados()
+              }, []);
+        } catch (error) {
+            console.log(error)
+            console.log("Erro na requisição")
+        }
+    };
+
+    async function deleteTask() {
+        try {
+            //const id = localStorage.getItem('task-id');
+
+            const id = lista.map((lista) => {
+                return lista._id;
+            });
+
+            const userId = localStorage.getItem('user-id');
+
+            const result: Task[] = await api.delete(`/users/${userId}/tasks/${id}`);
+
+            console.log(id);
+            //console.log(result);
+
+            window.location.reload();
+
+        } catch (error: any) {
+            console.log("Deu ruim")
+            console.log(error)
+        }
+    }
+
     isLogged();
+
+    Mostrar();
 
 
     return(
@@ -124,14 +147,14 @@ export const Home: React.FC = () => {
 
                             {lista.map((lista) => {
                                 return(
-                                    <TableRow key={lista.id} sx={{ backgroundColor: "#D3D3D3" }}>
+                                    <TableRow key={lista._id} sx={{ backgroundColor: "#D3D3D3" }}>
                                     <TableCell component="th" scope="row">
-                                        {lista.description}
+                                        {lista._description}
                                     </TableCell>
-                                    <TableCell align="left">{lista.detail}</TableCell>
+                                    <TableCell align="left">{lista._detail}</TableCell>
                                     <TableCell align="center">
                                         <Button size='small' color='success' onClick={openModalEdit}> <EditIcon /></Button>
-                                        <Button size='small' color='error'> <DeleteIcon /> </Button>
+                                        <Button size='small' color='error' onClick={deleteTask}> <DeleteIcon /> </Button>
                                     </TableCell>
                                     </TableRow>
 
