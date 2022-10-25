@@ -42,7 +42,13 @@ export const Login: React.FC = () => {
             console.log(id);
             console.log(result);
 
-            alert("Cadastro realizado com sucesso!")
+            alert("Cadastro realizado com sucesso!");
+
+            closeModal();
+
+            setName("");
+            setPass("");
+            setRpass("");
 
         } catch (error: any) {
             console.log(error)

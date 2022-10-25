@@ -65,13 +65,12 @@ export const Home: React.FC = () => {
 
             const result: Task[] = await api.post(`/users/${userId}/tasks`, task);
 
-            //localStorage.setItem('task-id', task.id)
-
-            //console.log(result);
+            console.log(result);
 
             closeModalAdd();
 
-            window.location.reload();
+            setDescricao("");
+            setDetalhamento("");
 
         } catch (error: any) {
             console.log(error);
@@ -94,32 +93,24 @@ export const Home: React.FC = () => {
                 };
         
                 getListaDeRecados()
-              }, []);
+              }, [lista]);
         } catch (error) {
             console.log(error)
             console.log("Erro na requisição")
         }
     };
 
-    async function deleteTask() {
+    async function deleteTask(id: string) {
         try {
-            //const id = localStorage.getItem('task-id');
-
-            const id = lista.map((lista) => {
-                return lista._id;
-            });
-
             const userId = localStorage.getItem('user-id');
 
             const result: Task[] = await api.delete(`/users/${userId}/tasks/${id}`);
 
             console.log(id);
-            //console.log(result);
-
-            window.location.reload();
+            console.log(result);
 
         } catch (error: any) {
-            console.log("Deu ruim")
+            console.log("Erro ao deletar")
             console.log(error)
         }
     }
@@ -154,7 +145,7 @@ export const Home: React.FC = () => {
                                     <TableCell align="left">{lista._detail}</TableCell>
                                     <TableCell align="center">
                                         <Button size='small' color='success' onClick={openModalEdit}> <EditIcon /></Button>
-                                        <Button size='small' color='error' onClick={deleteTask}> <DeleteIcon /> </Button>
+                                        <Button size='small' color='error' onClick={() => deleteTask(lista._id)}> <DeleteIcon /> </Button>
                                     </TableCell>
                                     </TableRow>
 
