@@ -14,7 +14,6 @@ interface Task {
 
 export const Home: React.FC = () => {
 
-
     const api = axios.create({
         baseURL: 'http://localhost:3000'
     });
@@ -22,7 +21,7 @@ export const Home: React.FC = () => {
     const[ lista, setLista ] = useState<Task[]>([]);
     const[ descricao, setDescricao] = useState<string>("");
     const[ detalhamento, setDetalhamento] = useState<string>("");
-
+    const [task, setTask] = useState<Task>();
 
     //MODAIS
     const [openAdd, setOpenAdd] = useState(false);
@@ -36,8 +35,9 @@ export const Home: React.FC = () => {
         setOpenAdd(false);
     };
 
-    const openModalEdit = () => {
+    const openModalEdit = (taskSelecionada: Task) => {
         setOpenEdit(true);
+        setTask(taskSelecionada);
     };
 
     const closeModalEdit = () => {
@@ -89,11 +89,11 @@ export const Home: React.FC = () => {
         
                     setLista(data);
         
-                  console.log(data)
                 };
         
                 getListaDeRecados()
               }, [lista]);
+
         } catch (error) {
             console.log(error)
             console.log("Erro na requisição")
@@ -106,14 +106,39 @@ export const Home: React.FC = () => {
 
             const result: Task[] = await api.delete(`/users/${userId}/tasks/${id}`);
 
-            console.log(id);
             console.log(result);
 
         } catch (error: any) {
-            console.log("Erro ao deletar")
+            console.log("Erro ao deletar task")
             console.log(error)
         }
-    }
+    };
+
+    async function editTask() {
+        try {
+            const taskEdit = {
+                description: descricao,
+                detail: detalhamento,
+            };
+
+            const userId = localStorage.getItem('user-id');
+            const id = task?._id;
+
+            const result: Task[] = await api.put(`/users/${userId}/tasks/${id}`, taskEdit);
+
+            console.log(id);
+            console.log(result);
+
+            closeModalEdit();
+
+            setDescricao("");
+            setDetalhamento("");
+
+        } catch (error: any) {
+            console.log("Erro ao editar task")
+            console.log(error)
+        }
+    };
 
     isLogged();
 
@@ -144,11 +169,10 @@ export const Home: React.FC = () => {
                                     </TableCell>
                                     <TableCell align="left">{lista._detail}</TableCell>
                                     <TableCell align="center">
-                                        <Button size='small' color='success' onClick={openModalEdit}> <EditIcon /></Button>
+                                        <Button size='small' color='success' onClick={() => openModalEdit(lista)}> <EditIcon /></Button>
                                         <Button size='small' color='error' onClick={() => deleteTask(lista._id)}> <DeleteIcon /> </Button>
                                     </TableCell>
                                     </TableRow>
-
                                     )
                                     })}
 
@@ -207,6 +231,8 @@ export const Home: React.FC = () => {
                         label="Descrição"
                         fullWidth
                         variant="outlined"
+                        value={descricao}
+                        onChange={(e) => setDescricao(e.target.value)}
                     />
                     <TextField
                         autoFocus
@@ -214,11 +240,13 @@ export const Home: React.FC = () => {
                         label="Detalhamento"
                         fullWidth
                         variant="outlined"
+                        value={detalhamento}
+                        onChange={(e) => setDetalhamento(e.target.value)}
                     />
                     </DialogContent>
                     <DialogActions>
-                    <Button onClick={closeModalEdit}>Cancelar</Button>
-                    <Button variant="contained" onClick={closeModalEdit}>Salvar</Button>
+                        <Button onClick={closeModalEdit}>Cancelar</Button>
+                        <Button variant="contained" onClick={() => editTask()}>Salvar</Button>
                     </DialogActions>
                 </Dialog>
             </Grid>
