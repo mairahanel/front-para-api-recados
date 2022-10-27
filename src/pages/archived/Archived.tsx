@@ -1,6 +1,7 @@
 import { Box,  Button, Grid,  Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import { Navbar } from "../../components/Navbar/Navbar";
 import ArchiveIcon from '@mui/icons-material/Archive';
+import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import { useState, useEffect } from "react";
 import axios, { AxiosResponse } from "axios";
 
@@ -51,6 +52,22 @@ export const Archived: React.FC = () => {
         }
     };
 
+    async function unfile(id: string) {
+        try {
+            const userId = localStorage.getItem('user-id');
+
+            const result: Task[] = await api.post(`/users/${userId}/tasks/${id}/archived`);
+
+            console.log(result);
+
+            alert("Tarefa desarquivada com sucesso!");
+
+        } catch (error: any) {
+            console.log(error)
+            console.log("Erro ao desarquivar task")
+        }
+    };
+
     isLogged();
 
     Mostrar();
@@ -80,7 +97,7 @@ export const Archived: React.FC = () => {
                                     </TableCell>
                                     <TableCell align="left">{lista._detail}</TableCell>
                                     <TableCell align="center">
-                                        <Button size='small' color='primary'> <ArchiveIcon /> </Button>
+                                        <Button size='small' color='success' onClick={() => unfile(lista._id)}> <UnarchiveIcon /> </Button>
                                     </TableCell>
                                     </TableRow>
                                     )

@@ -107,7 +107,7 @@ export const Navbar: React.FC = () => {
                         <ListItemIcon>
                             <ArchiveIcon />
                         </ListItemIcon>
-                        <ListItemText primary='Arquivados' /> 
+                        <ListItemText primary='Arquivadas' /> 
                     </ListItemButton>
                     </ListItem>
                     <Divider />
