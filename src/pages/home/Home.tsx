@@ -3,6 +3,7 @@ import { Navbar } from "../../components/Navbar/Navbar";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+import ArchiveIcon from '@mui/icons-material/Archive';
 import { useState, useEffect } from "react";
 import axios, { AxiosResponse } from "axios";
 
@@ -140,6 +141,22 @@ export const Home: React.FC = () => {
         }
     };
 
+    async function toFileTask(id: string) {
+        try {
+            const userId = localStorage.getItem('user-id');
+
+            const result: Task[] = await api.post(`/users/${userId}/tasks/${id}`);
+
+            console.log(result);
+
+            alert("Tarefa arquivada com sucesso!");
+
+        } catch (error: any) {
+            console.log("Erro ao arquivar task")
+            console.log(error)
+        }
+    };
+
     isLogged();
 
     Mostrar();
@@ -169,6 +186,7 @@ export const Home: React.FC = () => {
                                     </TableCell>
                                     <TableCell align="left">{lista._detail}</TableCell>
                                     <TableCell align="center">
+                                        <Button size='small' color='primary' onClick={() => toFileTask(lista._id)}> <ArchiveIcon /> </Button>
                                         <Button size='small' color='success' onClick={() => openModalEdit(lista)}> <EditIcon /></Button>
                                         <Button size='small' color='error' onClick={() => deleteTask(lista._id)}> <DeleteIcon /> </Button>
                                     </TableCell>
