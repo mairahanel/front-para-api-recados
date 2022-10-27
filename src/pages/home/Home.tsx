@@ -19,9 +19,9 @@ export const Home: React.FC = () => {
         baseURL: 'http://localhost:3000'
     });
 
-    const[ lista, setLista ] = useState<Task[]>([]);
-    const[ descricao, setDescricao] = useState<string>("");
-    const[ detalhamento, setDetalhamento] = useState<string>("");
+    const [ lista, setLista ] = useState<Task[]>([]);
+    const [ descricao, setDescricao] = useState<string>("");
+    const [ detalhamento, setDetalhamento] = useState<string>("");
     const [task, setTask] = useState<Task>();
 
     //MODAIS

@@ -5,6 +5,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import LogoutIcon from '@mui/icons-material/Logout';
+import ArchiveIcon from '@mui/icons-material/Archive';
+import HomeIcon from '@mui/icons-material/Home';
 
 export const Navbar: React.FC = () => {
 
@@ -35,6 +37,15 @@ export const Navbar: React.FC = () => {
         localStorage.removeItem("user-id");
 
         window.location.href = '/login'
+    };
+
+    function goArchived() {
+        window.location.href = '/archived';
+    };
+
+    function goHome() {
+        window.location.href = '/home';
+
     };
 
     return (
@@ -82,6 +93,24 @@ export const Navbar: React.FC = () => {
                 </DrawerHeader>
                 <Divider />
                 <List>
+                <ListItem disablePadding>
+                    <ListItemButton onClick={() => goHome()}>
+                        <ListItemIcon>
+                            <HomeIcon />
+                        </ListItemIcon>
+                        <ListItemText primary='Home' /> 
+                    </ListItemButton>
+                    </ListItem>
+                    <Divider />
+                    <ListItem disablePadding>
+                    <ListItemButton onClick={() => goArchived()}>
+                        <ListItemIcon>
+                            <ArchiveIcon />
+                        </ListItemIcon>
+                        <ListItemText primary='Arquivados' /> 
+                    </ListItemButton>
+                    </ListItem>
+                    <Divider />
                     <ListItem disablePadding>
                     <ListItemButton onClick={() => logout()}>
                         <ListItemIcon>
